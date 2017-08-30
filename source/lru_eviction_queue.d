@@ -20,9 +20,12 @@ import std.stdio : stdout;
 // Create a queue that will hold 3 items
 auto cache = LRUEvictionQueue!int(3);
 
+// Fire this event when an item is evicted
 cache.on_evict_cb = delegate(string key, int value) {
 	stdout.writefln("Evicted item: %s", key);
 };
+
+// Fire this event when an item is updated
 cache.on_update_cb = delegate(string key, int value) {
 	stdout.writefln("Updated item: %s", key);
 };
@@ -33,6 +36,7 @@ cache["bbb"] = 97;
 cache["ccc"] = 15;
 cache["ddd"] = 46;
 
+// Check that the key "aaa" was removed
 if (! cache.hasKey("aaa")) {
 	stdout.writefln("Item \"aaa\" was evicted!");
 }
@@ -84,7 +88,9 @@ struct LRUEvictionQueue(T) {
 	}
 
 	/++
-	Sets the value in the queue
+	Sets the value in the queue. Will fire the on_evict_cb event if it is a new
+	item that pushes an item off the queue. Will fire the on_update_cb event if
+	updating an already existing key.
 
 	Params:
 	 key = The key to set.
@@ -312,7 +318,9 @@ struct LRUEvictionQueue(T) {
 	}
 
 	/++
-	Sets the value in the queue
+	Sets the value in the queue. Will fire the on_evict_cb event if it is a new
+	item that pushes an item off the queue. Will fire the on_update_cb event if
+	updating an already existing key.
 
 	Params:
 	 key = The key to set.
@@ -332,7 +340,44 @@ struct LRUEvictionQueue(T) {
 	ulong _max_length;
 	SList!string _expiration_list;
 	T[string] _cache;
+
+	/++
+	The event to fire when an existing key is evicted
+
+	Params:
+	 on_evict_cb = The callback to fire.
+
+	Examples:
+	----
+	auto cache = LRUEvictionQueue!string(2);
+	cache.on_evict_cb = delegate(string key, string value) {
+
+	};
+
+	cache["aaa"] = "Lisa";
+	cache["bbb"] = "Sally";
+	cache["ccc"] = "Kevin";
+	----
+	+/
 	void delegate(string key, T value) on_evict_cb;
+
+	/++
+	The event to fire when an existing key is updated
+
+	Params:
+	 on_update_cb = The callback to fire.
+
+	Examples:
+	----
+	auto cache = LRUEvictionQueue!string(100);
+	cache.on_update_cb = delegate(string key, string value) {
+
+	};
+
+	cache["name"] = "Lisa";
+	cache["name"] = "Sally";
+	----
+	+/
 	void delegate(string key, T value) on_update_cb;
 }
 
