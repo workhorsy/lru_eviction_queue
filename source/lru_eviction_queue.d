@@ -4,12 +4,7 @@
 // https://github.com/workhorsy/lru_eviction_queue
 
 
-/*
-FIXME:
-* Make evict event fire on clear and remove?
-* Change to Boost license
-* Add operator in
-*/
+
 struct LRUEvictionQueue(T) {
 	import std.container : SList;
 
