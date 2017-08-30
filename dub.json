@@ -1,0 +1,15 @@
+{
+	"name": "lru_eviction_queue",
+	"description": "A LRU Eviction Queue for the D programming language",
+	"authors": [
+		"Matthew Brennan Jones <matthew.brennan.jones@gmail.com>",
+	],
+	"homepage": "https://github.com/workhorsy/BDD",
+	"copyright": "Copyright (c) 2017 Matthew Brennan Jones",
+	"license": "BSL-1.0",
+	"importPaths": ["source/"],
+
+	"targetName": "lru_eviction_queue",
+	"targetType": "staticLibrary",
+	"targetPath": "lib",
+}
