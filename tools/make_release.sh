@@ -2,7 +2,7 @@
 # Stop and exit on error
 set -e
 
-VERSION="1.1.0"
+VERSION="1.2.0"
 
 cd ..
 sed 's/$VERSION/'$VERSION'/g' tools/README.template.md > README.md
@@ -13,7 +13,8 @@ git add docs/$VERSION/
 
 # Create release
 git commit -a -m "Release $VERSION"
+git push
 
 # Create and push tag
 git tag v$VERSION -m "Release $VERSION"
-git push --all --tags
+git push --tags
