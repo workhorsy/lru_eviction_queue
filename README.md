@@ -20,5 +20,6 @@ dub test --main-file=test/main.d
 # TODO
 
 * Add operator in
-* Add documentation
 * Should evict event fire on clear and remove?
+* Should we have an option to reorder the queue on get?
+* Make it so the key is a template instead of a string.
