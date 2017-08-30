@@ -337,10 +337,6 @@ struct LRUEvictionQueue(T) {
 		return value;
 	}
 
-	ulong _max_length;
-	SList!string _expiration_list;
-	T[string] _cache;
-
 	/++
 	The event to fire when an existing key is evicted
 
@@ -379,6 +375,10 @@ struct LRUEvictionQueue(T) {
 	----
 	+/
 	void delegate(string key, T value) on_update_cb;
+
+	ulong _max_length;
+	SList!string _expiration_list;
+	T[string] _cache;
 }
 
 unittest {
