@@ -33,7 +33,7 @@ cache["bbb"] = 97;
 cache["ccc"] = 15;
 cache["ddd"] = 46;
 
-if (! cache.HasKey("aaa")) {
+if (! cache.hasKey("aaa")) {
 	stdout.writefln("Item \"aaa\" was evicted!");
 }
 ----
@@ -76,10 +76,10 @@ struct LRUEvictionQueue(T) {
 	Examples:
 	----
 	auto cache = LRUEvictionQueue!string(100);
-	bool retval = cache.HasKey("name");
+	bool retval = cache.hasKey("name");
 	----
 	+/
-	bool HasKey(string key) {
+	bool hasKey(string key) {
 		return (key in this._cache) != null;
 	}
 
@@ -346,25 +346,25 @@ unittest {
 
 			// Empty
 			cache.length.shouldEqual(0);
-			cache.HasKey("count").shouldEqual(false);
+			cache.hasKey("count").shouldEqual(false);
 
 			// Add
 			cache["count"] = 65;
 			cache["count"].shouldEqual(65);
 			cache.length.shouldEqual(1);
-			cache.HasKey("count").shouldEqual(true);
+			cache.hasKey("count").shouldEqual(true);
 
 			// Update
 			cache["count"] = 97;
 			cache["count"].shouldEqual(97);
 			cache.length.shouldEqual(1);
-			cache.HasKey("count").shouldEqual(true);
+			cache.hasKey("count").shouldEqual(true);
 
 			// Remove
 			cache.remove("count");
 			cache.get("count", -1).shouldEqual(-1);
 			cache.length.shouldEqual(0);
-			cache.HasKey("count").shouldEqual(false);
+			cache.hasKey("count").shouldEqual(false);
 		}),
 		it("Should work with strings", delegate() {
 			// Init
@@ -373,25 +373,25 @@ unittest {
 
 			// Empty
 			cache.length.shouldEqual(0);
-			cache.HasKey("name").shouldEqual(false);
+			cache.hasKey("name").shouldEqual(false);
 
 			// Add
 			cache["name"] = "bobrick";
 			cache["name"].shouldEqual("bobrick");
 			cache.length.shouldEqual(1);
-			cache.HasKey("name").shouldEqual(true);
+			cache.hasKey("name").shouldEqual(true);
 
 			// Update
 			cache["name"] = "frankrick";
 			cache["name"].shouldEqual("frankrick");
 			cache.length.shouldEqual(1);
-			cache.HasKey("name").shouldEqual(true);
+			cache.hasKey("name").shouldEqual(true);
 
 			// Remove
 			cache.remove("name");
 			cache.get("name", string.init).shouldEqual(string.init);
 			cache.length.shouldEqual(0);
-			cache.HasKey("name").shouldEqual(false);
+			cache.hasKey("name").shouldEqual(false);
 		}),
 		it("Should throw with invalid max size", delegate() {
 			shouldThrow(delegate() {
