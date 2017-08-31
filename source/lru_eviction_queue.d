@@ -55,11 +55,6 @@ struct LRUEvictionQueue(KEY, VALUE) {
 
 	Throws:
 	 If max_length is less than 1, it will throw an Exception.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, string)(100);
-	----
 	+/
 	this(ulong max_length) {
 		// Make sure the args are valid
@@ -71,20 +66,25 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		this._expiration_list = SList!KEY();
 	}
 
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(100);
+	}
+
 	/++
 	Returns true if a key is still on the queue
 
 	Params:
 	 key = The name of the key to check.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, string)(100);
-	bool retval = cache.hasKey("name");
-	----
 	+/
 	bool hasKey(KEY key) {
 		return (key in this._cache) != null;
+	}
+
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(100);
+		bool retval = cache.hasKey("name");
 	}
 
 	/++
@@ -95,12 +95,6 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	Params:
 	 key = The key to set.
 	 value = The value to set.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, string)(100);
-	cache.set("name", "Bob");
-	----
 	+/
 	void set(KEY key, VALUE value) {
 		import std.range : take, walkLength;
@@ -134,18 +128,18 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		this._cache[key] = value;
 	}
 
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(100);
+		cache.set("name", "Bob");
+	}
+
 	/++
 	Gets the value in the queue
 
 	Params:
 	 key = The key to get.
 	 default_value = The value returned if the key is not found.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, string)(100);
-	string name = cache.get("name", string.init);
-	----
 	+/
 	VALUE get(KEY key, VALUE default_value) {
 		import std.range : take;
@@ -163,19 +157,18 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		return default_value;
 	}
 
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(100);
+		string name = cache.get("name", string.init);
+	}
+
 	/++
-	Removes the key from the queue. Does nothing if the key is not in the queue. 
+	Removes the key from the queue. Does nothing if the key is not in the queue.
 	 Will not fire any events.
 
 	Params:
 	 key = The key to remove.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, string)(100);
-	cache["name"] = "Alice";
-	cache.remove("name");
-	----
 	+/
 	void remove(KEY key) {
 		import std.range : take;
@@ -191,19 +184,26 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		}
 	}
 
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(100);
+		cache["name"] = "Alice";
+		cache.remove("name");
+	}
+
 	/++
 	Removes all the items from the queue. Will not fire any events.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, string)(100);
-	cache["name"] = "Tim";
-	cache.clear();
-	----
 	+/
 	void clear() {
 		this._expiration_list.clear();
 		this._cache.clear();
+	}
+
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(100);
+		cache["name"] = "Tim";
+		cache.clear();
 	}
 
 	private void evictElement(KEY key) {
@@ -225,59 +225,49 @@ struct LRUEvictionQueue(KEY, VALUE) {
 
 	/++
 	Returns the length of the queue.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, string)(100);
-	cache["name"] = "Alice";
-	ulong len = cache.length;
-	----
 	+/
 	ulong length() {
 		return this._cache.length;
 	}
 
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(100);
+		cache["name"] = "Alice";
+		ulong len = cache.length;
+	}
+
 	/++
 	Returns the max length of the queue before items are removed.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, string)(100);
-	ulong max_len = cache.max_length;
-	----
 	+/
 	ulong max_length() {
 		return this._max_length;
 	}
 
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(100);
+		ulong max_len = cache.max_length;
+	}
+
 	/++
 	Returns all the keys in the queue.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, int)(100);
-	cache["bbb"] = 5;
-	cache["zzz"] = 7;
-	string[] keys = cache.keys();
-	----
 	+/
 	KEY[] keys() {
 		import std.array : array;
 		return array(this._expiration_list);
 	}
 
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, int)(100);
+		cache["bbb"] = 5;
+		cache["zzz"] = 7;
+		string[] keys = cache.keys();
+	}
+
 	/++
 	Used to iterate over the queue.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, int)(100);
-	cache["bbb"] = 5;
-	cache["zzz"] = 7;
-	foreach (key, value ; cache) {
-	
-	}
-	----
 	+/
 	int opApply(scope int delegate(ref KEY key, VALUE value) dg) {
 		int result = 0;
@@ -290,6 +280,16 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		return result;
 	}
 
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, int)(100);
+		cache["bbb"] = 5;
+		cache["zzz"] = 7;
+		foreach (key, value ; cache) {
+
+		}
+	}
+
 	/++
 	Gets the value in the queue. Throws if the key is not found.
 
@@ -298,13 +298,6 @@ struct LRUEvictionQueue(KEY, VALUE) {
 
 	 Throws:
  	 If the key is not found, it will throw an Exception.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, string)(100);
-	cache["name"] = "Frank";
-	string name = cache["name"];
-	----
 	+/
 	VALUE opIndex(KEY key) {
 		import std.string : format;
@@ -317,6 +310,13 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		throw new Exception("Invalid index '%s'.".format(key));
 	}
 
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(100);
+		cache["name"] = "Frank";
+		string name = cache["name"];
+	}
+
 	/++
 	Sets the value in the queue. Will fire the on_evict_cb event if it is a new
 	item that pushes an item off the queue. Will fire the on_update_cb event if
@@ -325,16 +325,16 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	Params:
 	 key = The key to set.
 	 value = The value to set.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, string)(100);
-	cache["name"] = "Lisa";
-	----
 	+/
 	VALUE opIndexAssign(VALUE value, KEY key) {
 		this.set(key, value);
 		return value;
+	}
+
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(100);
+		cache["name"] = "Lisa";
 	}
 
 	/++
@@ -342,44 +342,45 @@ struct LRUEvictionQueue(KEY, VALUE) {
 
 	Params:
 	 on_evict_cb = The callback to fire.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, string)(2);
-	cache.on_evict_cb = delegate(string key, string value) {
-
-	};
-
-	cache["aaa"] = "Lisa";
-	cache["bbb"] = "Sally";
-	cache["ccc"] = "Kevin";
-	----
 	+/
 	void delegate(KEY key, VALUE value) on_evict_cb;
+
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(2);
+		cache.on_evict_cb = delegate(string key, string value) {
+
+		};
+
+		cache["aaa"] = "Lisa";
+		cache["bbb"] = "Sally";
+		cache["ccc"] = "Kevin";
+	}
 
 	/++
 	The event to fire when an existing key is updated
 
 	Params:
 	 on_update_cb = The callback to fire.
-
-	Examples:
-	----
-	auto cache = LRUEvictionQueue!(string, string)(100);
-	cache.on_update_cb = delegate(string key, string value) {
-
-	};
-
-	cache["name"] = "Lisa";
-	cache["name"] = "Sally";
-	----
 	+/
 	void delegate(KEY key, VALUE value) on_update_cb;
+
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(100);
+		cache.on_update_cb = delegate(string key, string value) {
+
+		};
+
+		cache["name"] = "Lisa";
+		cache["name"] = "Sally";
+	}
 
 	ulong _max_length;
 	SList!KEY _expiration_list;
 	VALUE[KEY] _cache;
 }
+
 
 unittest {
 	import BDD;
