@@ -17,9 +17,3 @@ dmd -c -D source/lru_eviction_queue.d -Df=docs/$VERSION/index.html
 dub test --main-file=test/main.d
 ```
 
-# TODO
-
-* Add operator in
-* Should evict event fire on clear and remove?
-* Should we have an option to reorder the queue on get?
-* Make it so the key is a template instead of a string.
