@@ -383,7 +383,7 @@ struct LRUEvictionQueue(T) {
 
 unittest {
 	import BDD;
-	describe("lru_cache",
+	describe("LRUEvictionQueue",
 		it("Should add, update, and remove item", delegate() {
 			// Init
 			auto cache = LRUEvictionQueue!int(ulong.max);
