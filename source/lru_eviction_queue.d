@@ -282,8 +282,8 @@ struct LRUEvictionQueue(T) {
 	int opApply(scope int delegate(ref string key, T value) dg) {
 		int result = 0;
 
-		foreach (key, value ; _cache) {
-			result = dg(key, value);
+		foreach (key ; _expiration_list[]) {
+			result = dg(key, _cache[key]);
 			if (result)
 				break;
 		}
@@ -549,8 +549,8 @@ unittest {
 				values ~= value;
 			}
 
-			keys.shouldEqual(["3", "2", "1"]);
-			values.shouldEqual(["Heidi", "Al", "Tim"]);
+			keys.shouldEqual(["1", "2", "3"]);
+			values.shouldEqual(["Tim", "Al", "Heidi"]);
 		}),
 	);
 }
