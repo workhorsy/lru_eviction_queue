@@ -18,7 +18,7 @@ import lru_eviction_queue;
 import std.stdio : stdout;
 
 // Create a queue that will hold 3 items
-auto cache = LRUEvictionQueue!int(3);
+auto cache = LRUEvictionQueue!(string, int)(3);
 
 // Fire this event when an item is evicted
 cache.on_evict_cb = delegate(string key, int value) {
@@ -44,7 +44,7 @@ if (! cache.hasKey("aaa")) {
 +/
 
 
-struct LRUEvictionQueue(T) {
+struct LRUEvictionQueue(KEY, VALUE) {
 	import std.container : SList;
 
 	/++
@@ -58,7 +58,7 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!string(100);
+	auto cache = LRUEvictionQueue!(string, string)(100);
 	----
 	+/
 	this(ulong max_length) {
@@ -68,7 +68,7 @@ struct LRUEvictionQueue(T) {
 		}
 
 		this._max_length = max_length;
-		this._expiration_list = SList!string();
+		this._expiration_list = SList!KEY();
 	}
 
 	/++
@@ -79,11 +79,11 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!string(100);
+	auto cache = LRUEvictionQueue!(string, string)(100);
 	bool retval = cache.hasKey("name");
 	----
 	+/
-	bool hasKey(string key) {
+	bool hasKey(KEY key) {
 		return (key in this._cache) != null;
 	}
 
@@ -98,11 +98,11 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!string(100);
+	auto cache = LRUEvictionQueue!(string, string)(100);
 	cache.set("name", "Bob");
 	----
 	+/
-	void set(string key, T value) {
+	void set(KEY key, VALUE value) {
 		import std.range : take, walkLength;
 		import std.array : array;
 		import std.algorithm : find;
@@ -143,11 +143,11 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!string(100);
+	auto cache = LRUEvictionQueue!(string, string)(100);
 	string name = cache.get("name", string.init);
 	----
 	+/
-	T get(string key, T default_value) {
+	VALUE get(KEY key, VALUE default_value) {
 		import std.range : take;
 		import std.algorithm : find;
 
@@ -172,12 +172,12 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!string(100);
+	auto cache = LRUEvictionQueue!(string, string)(100);
 	cache["name"] = "Alice";
 	cache.remove("name");
 	----
 	+/
-	void remove(string key) {
+	void remove(KEY key) {
 		import std.range : take;
 		import std.algorithm : find;
 
@@ -196,7 +196,7 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!string(100);
+	auto cache = LRUEvictionQueue!(string, string)(100);
 	cache["name"] = "Tim";
 	cache.clear();
 	----
@@ -206,7 +206,7 @@ struct LRUEvictionQueue(T) {
 		this._cache.clear();
 	}
 
-	private void evictElement(string key) {
+	private void evictElement(KEY key) {
 		import std.range : take;
 		import std.algorithm : find;
 
@@ -228,7 +228,7 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!string(100);
+	auto cache = LRUEvictionQueue!(string, string)(100);
 	cache["name"] = "Alice";
 	ulong len = cache.length;
 	----
@@ -242,7 +242,7 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!string(100);
+	auto cache = LRUEvictionQueue!(string, string)(100);
 	ulong max_len = cache.max_length;
 	----
 	+/
@@ -255,13 +255,13 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!int(100);
+	auto cache = LRUEvictionQueue!(string, int)(100);
 	cache["bbb"] = 5;
 	cache["zzz"] = 7;
 	string[] keys = cache.keys();
 	----
 	+/
-	string[] keys() {
+	KEY[] keys() {
 		import std.array : array;
 		return array(this._expiration_list);
 	}
@@ -271,7 +271,7 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!int(100);
+	auto cache = LRUEvictionQueue!(string, int)(100);
 	cache["bbb"] = 5;
 	cache["zzz"] = 7;
 	foreach (key, value ; cache) {
@@ -279,7 +279,7 @@ struct LRUEvictionQueue(T) {
 	}
 	----
 	+/
-	int opApply(scope int delegate(ref string key, T value) dg) {
+	int opApply(scope int delegate(ref KEY key, VALUE value) dg) {
 		int result = 0;
 
 		foreach (key ; _expiration_list[]) {
@@ -301,16 +301,16 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!string(100);
+	auto cache = LRUEvictionQueue!(string, string)(100);
 	cache["name"] = "Frank";
 	string name = cache["name"];
 	----
 	+/
-	T opIndex(string key) {
+	VALUE opIndex(KEY key) {
 		import std.string : format;
 
-		T retval = this.get(key, T.init);
-		if (retval !is T.init) {
+		VALUE retval = this.get(key, VALUE.init);
+		if (retval !is VALUE.init) {
 			return retval;
 		}
 
@@ -328,11 +328,11 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!string(100);
+	auto cache = LRUEvictionQueue!(string, string)(100);
 	cache["name"] = "Lisa";
 	----
 	+/
-	T opIndexAssign(T value, string key) {
+	VALUE opIndexAssign(VALUE value, KEY key) {
 		this.set(key, value);
 		return value;
 	}
@@ -345,7 +345,7 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!string(2);
+	auto cache = LRUEvictionQueue!(string, string)(2);
 	cache.on_evict_cb = delegate(string key, string value) {
 
 	};
@@ -355,7 +355,7 @@ struct LRUEvictionQueue(T) {
 	cache["ccc"] = "Kevin";
 	----
 	+/
-	void delegate(string key, T value) on_evict_cb;
+	void delegate(KEY key, VALUE value) on_evict_cb;
 
 	/++
 	The event to fire when an existing key is updated
@@ -365,7 +365,7 @@ struct LRUEvictionQueue(T) {
 
 	Examples:
 	----
-	auto cache = LRUEvictionQueue!string(100);
+	auto cache = LRUEvictionQueue!(string, string)(100);
 	cache.on_update_cb = delegate(string key, string value) {
 
 	};
@@ -374,11 +374,11 @@ struct LRUEvictionQueue(T) {
 	cache["name"] = "Sally";
 	----
 	+/
-	void delegate(string key, T value) on_update_cb;
+	void delegate(KEY key, VALUE value) on_update_cb;
 
 	ulong _max_length;
-	SList!string _expiration_list;
-	T[string] _cache;
+	SList!KEY _expiration_list;
+	VALUE[KEY] _cache;
 }
 
 unittest {
@@ -386,7 +386,7 @@ unittest {
 	describe("LRUEvictionQueue",
 		it("Should add, update, and remove item", delegate() {
 			// Init
-			auto cache = LRUEvictionQueue!int(ulong.max);
+			auto cache = LRUEvictionQueue!(string, int)(ulong.max);
 			cache.max_length.shouldEqual(ulong.max);
 
 			// Empty
@@ -413,7 +413,7 @@ unittest {
 		}),
 		it("Should work with strings", delegate() {
 			// Init
-			auto cache = LRUEvictionQueue!string(ulong.max);
+			auto cache = LRUEvictionQueue!(string, string)(ulong.max);
 			cache.max_length.shouldEqual(ulong.max);
 
 			// Empty
@@ -440,25 +440,25 @@ unittest {
 		}),
 		it("Should throw with invalid max size", delegate() {
 			shouldThrow(delegate() {
-				auto cache = LRUEvictionQueue!string(0);
+				auto cache = LRUEvictionQueue!(string, string)(0);
 			}, "Cannot have a max_length less than 1.");
 		}),
 		it("Should save items in order added", delegate() {
 			import std.algorithm.sorting : sort;
-			auto cache = LRUEvictionQueue!string(3);
+			auto cache = LRUEvictionQueue!(int, string)(3);
 			cache.max_length.shouldEqual(3);
 
 			// Add 4 items
-			cache["1"] = "Tim";
-			cache["2"] = "Al";
-			cache["3"] = "Heidi";
+			cache[99] = "Tim";
+			cache[22] = "Al";
+			cache[44] = "Heidi";
 			cache.length.shouldEqual(3);
 
 			// Make sure the keys are in order added
-			cache.keys.shouldEqual(["1", "2", "3"]);
+			cache.keys.shouldEqual([99, 22, 44]);
 		}),
 		it("Should evict first items", delegate() {
-			auto cache = LRUEvictionQueue!string(3);
+			auto cache = LRUEvictionQueue!(string, string)(3);
 			cache.max_length.shouldEqual(3);
 
 			// Add 4 items
@@ -472,7 +472,7 @@ unittest {
 			cache.keys.shouldEqual(["2", "3", "4"]);
 		}),
 		it("Should reorder items after Get", delegate() {
-			auto cache = LRUEvictionQueue!string(4);
+			auto cache = LRUEvictionQueue!(string, string)(4);
 			cache.max_length.shouldEqual(4);
 
 			// Add 4 items
@@ -488,7 +488,7 @@ unittest {
 			cache.keys.shouldEqual(["2", "1", "3", "4"]);
 		}),
 		it("Should reorder items after Set", delegate() {
-			auto cache = LRUEvictionQueue!string(4);
+			auto cache = LRUEvictionQueue!(string, string)(4);
 			cache.max_length.shouldEqual(4);
 
 			// Add 4 items
@@ -504,7 +504,7 @@ unittest {
 			cache.keys.shouldEqual(["3", "1", "2", "4"]);
 		}),
 		it("Should fire event on eviction", delegate() {
-			auto cache = LRUEvictionQueue!string(2);
+			auto cache = LRUEvictionQueue!(string, string)(2);
 			cache.max_length.shouldEqual(2);
 
 			string[] evictions;
@@ -535,7 +535,7 @@ unittest {
 			changes.shouldEqual(["3"]);
 		}),
 		it("Should work with foreach", delegate() {
-			auto cache = LRUEvictionQueue!string(3);
+			auto cache = LRUEvictionQueue!(string, string)(3);
 			cache.max_length.shouldEqual(3);
 
 			cache["1"] = "Tim";
