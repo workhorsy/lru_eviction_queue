@@ -1,4 +1,4 @@
-# lru_eviction_queue
+# LRU Eviction Queue
 A LRU Eviction Queue for the D programming language
 
 # Documentation
