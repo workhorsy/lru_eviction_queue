@@ -3,7 +3,6 @@
 # TODO
 
 * Is there a way to make BDD only a dependency for building tests?
-* Add operator in https://dlang.org/spec/expression.html#InExpression
 * Should evict event fire on clear and remove?
 * Should length be size_t?
 * Replace front/back with head/tail?

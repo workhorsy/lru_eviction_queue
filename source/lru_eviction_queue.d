@@ -43,6 +43,11 @@ if (! cache.hasKey("aaa")) {
 	stdout.writefln("Item \"aaa\" was evicted!");
 }
 
+// Check that the key "ccc" was found
+if ("ccc" in cache) {
+	stdout.writefln("Item \"ccc\" was found!");
+}
+
 // Prints all the items in the cache
 foreach (key, value ; cache) {
 	stdout.writefln("%s : %s", key, value);
@@ -308,6 +313,29 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	}
 
 	/++
+	Returns a pointer to the value in the queue, or null.
+
+	Params:
+	 rhs = The name of the key to check.
+	+/
+	auto opBinary(string op)(KEY rhs) {
+		static if (op == "in") return (rhs in this._cache);
+		else static assert(0, "Operator " ~ op ~ " not implemented");
+	}
+
+	///
+	unittest {
+		auto cache = LRUEvictionQueue!(string, string)(100);
+		cache["name"] = "Lisa";
+		string* result = "name" in cache;
+	}
+
+	auto opBinaryRight(string op)(KEY lhs) {
+		static if (op == "in") return (lhs in this._cache);
+		else static assert(0, "Operator " ~ op ~ " not implemented");
+	}
+
+	/++
 	The event to fire when an existing key is evicted
 
 	Params:
@@ -560,6 +588,16 @@ unittest {
 
 			keys.shouldEqual(["3", "2", "1"]);
 			values.shouldEqual(["Heidi", "Al", "Tim"]);
+		}),
+		it("Should work with in", delegate() {
+			auto cache = LRUEvictionQueue!(string, int)(3);
+			cache["count"] = 3;
+
+			int* value = "count" in cache;
+			shouldEqual(*value, 3);
+
+			value = "nope" in cache;
+			shouldEqual(value, null);
 		}),
 	);
 }

@@ -1,3 +1,6 @@
+* Release 1.5.0:
+	* Fixed Bug #3: Make operator in work.
+
 09/01/2017 Release 1.4.0:
 	* Fixed Bug #2: Replace slow SList walkLength calls.
 	* Fixed Bug #1: Newest items are evicted, instead of oldest.
