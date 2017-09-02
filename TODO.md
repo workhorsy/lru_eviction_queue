@@ -9,7 +9,6 @@
 * Replace front/back with head/tail?
 * Replace element/entry with item
 * Add link to changelog and release date to docs
-* Add foreach to top Example
 * Example is inside a comment and can't be verified.
 * Spacing in examples is off
 * Version number is hard coded in documentation

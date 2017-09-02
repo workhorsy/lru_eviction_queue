@@ -42,6 +42,11 @@ cache["ddd"] = 46;
 if (! cache.hasKey("aaa")) {
 	stdout.writefln("Item \"aaa\" was evicted!");
 }
+
+// Prints all the items in the cache
+foreach (key, value ; cache) {
+	stdout.writefln("%s : %s", key, value);
+}
 ----
 +/
 
