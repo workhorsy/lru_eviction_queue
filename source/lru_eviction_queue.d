@@ -163,16 +163,8 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	 key = The key to remove.
 	+/
 	void remove(KEY key) {
-		import std.range : take;
-		import std.algorithm : find;
-
 		if (key in this._cache) {
-			// Remove the element from the expiration list
-			auto r = find(this._expiration_list[], key).take(1);
-			this._expiration_list.stableLinearRemove(r);
-
-			// Remove the item from the cache
-			this._cache.remove(key);
+			this.removeElement(key);
 		}
 	}
 
@@ -352,20 +344,12 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	}
 
 	private void evictElement(KEY key) {
-		import std.range : take;
-		import std.algorithm : find;
-
 		// Fire the on evict callback
 		if (this.on_evict_cb) {
 			this.on_evict_cb(key, this._cache[key]);
 		}
 
-		// Remove the element from the expiration list
-		auto r = find(this._expiration_list[], key).take(1);
-		this._expiration_list.stableLinearRemove(r);
-
-		// Remove the item from the cache
-		this._cache.remove(key);
+		this.removeElement(key);
 	}
 
 	private void moveElementToFront(KEY key) {
@@ -375,6 +359,18 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		auto r = find(this._expiration_list[], key).take(1);
 		this._expiration_list.stableLinearRemove(r);
 		this._expiration_list.stableInsertFront(r);
+	}
+
+	private void removeElement(KEY key) {
+		import std.range : take;
+		import std.algorithm : find;
+
+		// Remove the element from the expiration list
+		auto r = find(this._expiration_list[], key).take(1);
+		this._expiration_list.stableLinearRemove(r);
+
+		// Remove the item from the cache
+		this._cache.remove(key);
 	}
 
 	ulong _max_length;
