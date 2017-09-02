@@ -1,4 +1,5 @@
 * Release 1.4.0:
+	* Fixed Bug #2: Replace slow SList walkLength calls.
 	* Fixed Bug #1: Newest items are evicted, instead of oldest.
 
 08/31/2017 Release 1.3.0

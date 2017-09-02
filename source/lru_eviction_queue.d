@@ -97,8 +97,6 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	 value = The value to set.
 	+/
 	void set(KEY key, VALUE value) {
-		import std.range : walkLength;
-
 		// If the key is already used, update the value
 		if (key in this._cache) {
 			this.moveElementToFront(key);
@@ -114,7 +112,7 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		}
 
 		// If the size will be greater than the max, remove the oldest element
-		if (walkLength(this._expiration_list[]) + 1 > this._max_length) {
+		if (this._cache.length + 1 > this._max_length) {
 			this.evictBackElement();
 		}
 
