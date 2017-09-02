@@ -206,23 +206,6 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		cache.clear();
 	}
 
-	private void evictElement(KEY key) {
-		import std.range : take;
-		import std.algorithm : find;
-
-		// Fire the on evict callback
-		if (this.on_evict_cb) {
-			this.on_evict_cb(key, this._cache[key]);
-		}
-
-		// Remove the element from the expiration list
-		auto r = find(this._expiration_list[], key).take(1);
-		this._expiration_list.stableLinearRemove(r);
-
-		// Remove the item from the cache
-		this._cache.remove(key);
-	}
-
 	/++
 	Returns the length of the queue.
 	+/
@@ -374,6 +357,23 @@ struct LRUEvictionQueue(KEY, VALUE) {
 
 		cache["name"] = "Lisa";
 		cache["name"] = "Sally";
+	}
+
+	private void evictElement(KEY key) {
+		import std.range : take;
+		import std.algorithm : find;
+
+		// Fire the on evict callback
+		if (this.on_evict_cb) {
+			this.on_evict_cb(key, this._cache[key]);
+		}
+
+		// Remove the element from the expiration list
+		auto r = find(this._expiration_list[], key).take(1);
+		this._expiration_list.stableLinearRemove(r);
+
+		// Remove the item from the cache
+		this._cache.remove(key);
 	}
 
 	ulong _max_length;
