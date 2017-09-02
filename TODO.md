@@ -11,3 +11,4 @@
 * Example is inside a comment and can't be verified.
 * Spacing in examples is off
 * Version number is hard coded in documentation
+* Replace auto with KEY/VALUE
