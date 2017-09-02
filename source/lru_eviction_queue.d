@@ -115,11 +115,11 @@ struct LRUEvictionQueue(KEY, VALUE) {
 
 		// If the size will be greater than the max, remove the oldest element
 		if (walkLength(this._expiration_list[]) + 1 > this._max_length) {
-			this.evictFrontElement();
+			this.evictBackElement();
 		}
 
 		// If the key is new, add the new entry
-		this._expiration_list.stableInsertAfter(this._expiration_list[], key);
+		this._expiration_list.stableInsertFront(key);
 		this._cache[key] = value;
 	}
 
@@ -341,15 +341,21 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		cache["name"] = "Sally";
 	}
 
-	private void evictFrontElement() {
-		auto key = this._expiration_list.front();
+	private void evictBackElement() {
+		import std.range : tail;
+		import std.array : array;
 
-		// Fire the on evict callback
-		if (this.on_evict_cb) {
-			this.on_evict_cb(key, this._cache[key]);
+		auto r = tail(this._expiration_list[], 1);
+		if (r.length > 0) {
+			auto key = array(r)[0];
+
+			// Fire the on evict callback
+			if (this.on_evict_cb) {
+				this.on_evict_cb(key, this._cache[key]);
+			}
+
+			this.removeElement(key);
 		}
-
-		this.removeElement(key);
 	}
 
 	private void moveElementToFront(KEY key) {
@@ -453,7 +459,7 @@ unittest {
 			cache.length.shouldEqual(3);
 
 			// Make sure the keys are in order added
-			cache.keys.shouldEqual([99, 22, 44]);
+			cache.keys.shouldEqual([44, 22, 99]);
 		}),
 		it("Should evict first items", delegate() {
 			auto cache = LRUEvictionQueue!(string, string)(3);
@@ -467,7 +473,7 @@ unittest {
 			cache.length.shouldEqual(3);
 
 			// Make sure the last 3 items are the only keys now
-			cache.keys.shouldEqual(["2", "3", "4"]);
+			cache.keys.shouldEqual(["4", "3", "2"]);
 		}),
 		it("Should reorder items after Get", delegate() {
 			auto cache = LRUEvictionQueue!(string, string)(4);
@@ -483,7 +489,7 @@ unittest {
 			cache.get("2", string.init);
 
 			// Make sure the keys are now reordered
-			cache.keys.shouldEqual(["2", "1", "3", "4"]);
+			cache.keys.shouldEqual(["2", "4", "3", "1"]);
 		}),
 		it("Should reorder items after Set", delegate() {
 			auto cache = LRUEvictionQueue!(string, string)(4);
@@ -499,7 +505,7 @@ unittest {
 			cache.set("3", "Lisa");
 
 			// Make sure item 3 was moved to head
-			cache.keys.shouldEqual(["3", "1", "2", "4"]);
+			cache.keys.shouldEqual(["3", "4", "2", "1"]);
 		}),
 		it("Should fire event on eviction", delegate() {
 			auto cache = LRUEvictionQueue!(string, string)(2);
@@ -547,8 +553,8 @@ unittest {
 				values ~= value;
 			}
 
-			keys.shouldEqual(["1", "2", "3"]);
-			values.shouldEqual(["Tim", "Al", "Heidi"]);
+			keys.shouldEqual(["3", "2", "1"]);
+			values.shouldEqual(["Heidi", "Al", "Tim"]);
 		}),
 	);
 }
