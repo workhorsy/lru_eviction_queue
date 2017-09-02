@@ -116,8 +116,7 @@ struct LRUEvictionQueue(KEY, VALUE) {
 
 		// If the size will be greater than the max, remove the oldest element
 		if (walkLength(this._expiration_list[]) + 1 > this._max_length) {
-			auto remove_key = this._expiration_list.front();
-			this.evictElement(remove_key);
+			this.evictFrontElement();
 		}
 
 		// If the key is new, add the new entry
@@ -343,7 +342,9 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		cache["name"] = "Sally";
 	}
 
-	private void evictElement(KEY key) {
+	private void evictFrontElement() {
+		auto key = this._expiration_list.front();
+
 		// Fire the on evict callback
 		if (this.on_evict_cb) {
 			this.on_evict_cb(key, this._cache[key]);
