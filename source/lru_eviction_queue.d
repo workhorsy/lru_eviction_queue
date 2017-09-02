@@ -98,7 +98,6 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	+/
 	void set(KEY key, VALUE value) {
 		import std.range : walkLength;
-		import std.array : array;
 
 		// If the key is already used, update the value
 		if (key in this._cache) {
