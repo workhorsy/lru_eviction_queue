@@ -97,15 +97,12 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	 value = The value to set.
 	+/
 	void set(KEY key, VALUE value) {
-		import std.range : take, walkLength;
+		import std.range : walkLength;
 		import std.array : array;
-		import std.algorithm : find;
 
 		// If the key is already used, update the value
 		if (key in this._cache) {
-			auto r = find(this._expiration_list[], key).take(1);
-			this._expiration_list.stableLinearRemove(r);
-			this._expiration_list.stableInsertFront(r);
+			this.moveElementToFront(key);
 
 			if (on_update_cb) {
 				auto old_value = this._cache[key];
@@ -142,14 +139,9 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	 default_value = The value returned if the key is not found.
 	+/
 	VALUE get(KEY key, VALUE default_value) {
-		import std.range : take;
-		import std.algorithm : find;
-
 		// If it has the key, return the value
 		if (key in this._cache) {
-			auto r = find(this._expiration_list[], key).take(1);
-			this._expiration_list.stableLinearRemove(r);
-			this._expiration_list.stableInsertFront(r);
+			this.moveElementToFront(key);
 
 			return this._cache[key];
 		}
@@ -374,6 +366,15 @@ struct LRUEvictionQueue(KEY, VALUE) {
 
 		// Remove the item from the cache
 		this._cache.remove(key);
+	}
+
+	private void moveElementToFront(KEY key) {
+		import std.range : take;
+		import std.algorithm : find;
+
+		auto r = find(this._expiration_list[], key).take(1);
+		this._expiration_list.stableLinearRemove(r);
+		this._expiration_list.stableInsertFront(r);
 	}
 
 	ulong _max_length;
