@@ -1,4 +1,5 @@
 * Release 1.5.0:
+	* Fixed Bug #4: Change the length from ulong to size_t.
 	* Fixed Bug #3: Make operator in work.
 
 09/01/2017 Release 1.4.0:

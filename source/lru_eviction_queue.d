@@ -68,7 +68,7 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	Throws:
 	 If max_length is less than 1, it will throw an Exception.
 	+/
-	this(ulong max_length) {
+	this(size_t max_length) {
 		// Make sure the args are valid
 		if (max_length < 1) {
 			throw new Exception("Cannot have a max_length less than 1.");
@@ -201,7 +201,7 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	/++
 	Returns the length of the queue.
 	+/
-	ulong length() {
+	size_t length() {
 		return this._cache.length;
 	}
 
@@ -209,20 +209,20 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	unittest {
 		auto cache = LRUEvictionQueue!(string, string)(100);
 		cache["name"] = "Alice";
-		ulong len = cache.length;
+		size_t len = cache.length;
 	}
 
 	/++
 	Returns the max length of the queue before items are removed.
 	+/
-	ulong max_length() {
+	size_t max_length() {
 		return this._max_length;
 	}
 
 	///
 	unittest {
 		auto cache = LRUEvictionQueue!(string, string)(100);
-		ulong max_len = cache.max_length;
+		size_t max_len = cache.max_length;
 	}
 
 	/++
@@ -412,7 +412,7 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		this._cache.remove(key);
 	}
 
-	ulong _max_length;
+	size_t _max_length;
 	SList!KEY _expiration_list;
 	VALUE[KEY] _cache;
 }
@@ -423,8 +423,8 @@ unittest {
 	describe("LRUEvictionQueue",
 		it("Should add, update, and remove item", delegate() {
 			// Init
-			auto cache = LRUEvictionQueue!(string, int)(ulong.max);
-			cache.max_length.shouldEqual(ulong.max);
+			auto cache = LRUEvictionQueue!(string, int)(size_t.max);
+			cache.max_length.shouldEqual(size_t.max);
 
 			// Empty
 			cache.length.shouldEqual(0);
@@ -450,8 +450,8 @@ unittest {
 		}),
 		it("Should work with strings", delegate() {
 			// Init
-			auto cache = LRUEvictionQueue!(string, string)(ulong.max);
-			cache.max_length.shouldEqual(ulong.max);
+			auto cache = LRUEvictionQueue!(string, string)(size_t.max);
+			cache.max_length.shouldEqual(size_t.max);
 
 			// Empty
 			cache.length.shouldEqual(0);
