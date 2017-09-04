@@ -114,7 +114,7 @@ struct LRUEvictionQueue(KEY, VALUE) {
 			this.moveElementToFront(key);
 
 			if (on_update_cb) {
-				auto old_value = this._cache[key];
+				VALUE old_value = this._cache[key];
 				on_update_cb(key, old_value);
 			}
 
@@ -318,7 +318,7 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	Params:
 	 rhs = The name of the key to check.
 	+/
-	auto opBinary(string op)(KEY rhs) {
+	VALUE* opBinary(string op)(KEY rhs) {
 		static if (op == "in") return (rhs in this._cache);
 		else static assert(0, "Operator " ~ op ~ " not implemented");
 	}
@@ -330,7 +330,7 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		string* result = "name" in cache;
 	}
 
-	auto opBinaryRight(string op)(KEY lhs) {
+	VALUE* opBinaryRight(string op)(KEY lhs) {
 		static if (op == "in") return (lhs in this._cache);
 		else static assert(0, "Operator " ~ op ~ " not implemented");
 	}
@@ -380,7 +380,7 @@ struct LRUEvictionQueue(KEY, VALUE) {
 
 		auto r = tail(this._expiration_list[], 1);
 		if (r.length > 0) {
-			auto key = array(r)[0];
+			KEY key = array(r)[0];
 
 			// Fire the on evict callback
 			if (this.on_evict_cb) {
