@@ -9,7 +9,7 @@ A LRU Eviction Queue for the D programming language
 Home page:
 $(LINK https://github.com/workhorsy/lru_eviction_queue)
 
-Version: 1.4.0
+Version: 1.5.0
 
 License:
 Boost Software License - Version 1.0
