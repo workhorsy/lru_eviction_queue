@@ -3,12 +3,12 @@ A LRU Eviction Queue for the D programming language
 
 # Documentation
 
-[https://workhorsy.github.io/lru_eviction_queue/1.5.0/](https://workhorsy.github.io/lru_eviction_queue/1.5.0/)
+[https://workhorsy.github.io/lru_eviction_queue/1.6.0/](https://workhorsy.github.io/lru_eviction_queue/1.6.0/)
 
 # Generate documentation
 
 ```
-dub --build=docs
+dmd -c -D source/lru_eviction_queue.d -Df=docs/1.6.0/index.html
 ```
 
 # Run unit tests
