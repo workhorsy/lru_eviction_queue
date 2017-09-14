@@ -8,7 +8,7 @@ A LRU Eviction Queue for the D programming language
 # Generate documentation
 
 ```
-dmd -c -D source/lru_eviction_queue.d -Df=docs/$VERSION/index.html
+dub --build=docs
 ```
 
 # Run unit tests
