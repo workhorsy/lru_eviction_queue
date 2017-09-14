@@ -8,7 +8,9 @@ cd ..
 sed 's/$VERSION/'$VERSION'/g' tools/README.template.md > README.md
 
 # Generate documentation
-dmd -c -D source/lru_eviction_queue.d -Df=docs/$VERSION/index.html
+dub --build=docs
+mkdir docs/$VERSION
+mv docs/lru_eviction_queue.html docs/$VERSION/index.html
 git add docs/$VERSION/
 
 # Create release
