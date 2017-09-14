@@ -14,7 +14,7 @@ dmd -c -D source/lru_eviction_queue.d -Df=docs/$VERSION/index.html
 # Run unit tests
 
 ```
-dub test --main-file=test/main.d
+dub test
 ```
 
 [![Dub version](https://img.shields.io/dub/v/lru_eviction_queue.svg)](https://code.dlang.org/packages/lru_eviction_queue)
