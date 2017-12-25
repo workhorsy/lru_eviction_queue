@@ -131,10 +131,10 @@ unittest {
 
 			string[] evictions;
 			string[] changes;
-			cache.on_evict_cb = delegate(string key, string value) {
+			cache.on_evict_cb = delegate(string key, ref string value) {
 				evictions ~= key;
 			};
-			cache.on_update_cb = delegate(string key, string value) {
+			cache.on_update_cb = delegate(string key, ref string value) {
 				changes ~= key;
 			};
 
@@ -166,7 +166,7 @@ unittest {
 
 			string[] keys;
 			string[] values;
-			foreach (key, value ; cache) {
+			foreach (key, ref value ; cache) {
 				keys ~= key;
 				values ~= value;
 			}
@@ -182,6 +182,23 @@ unittest {
 			shouldEqual(*value, 3);
 
 			value = "nope" in cache;
+			shouldEqual(value, null);
+		}),
+		it("Should work with passing by reference", delegate() {
+			struct Cat {
+				string name;
+			}
+			auto cache = LRUEvictionQueue!(string, Cat)(2);
+			cache.on_evict_cb = delegate(string key, ref Cat value) {
+			};
+			cache.on_update_cb = delegate(string key, ref Cat value) {
+			};
+
+			cache["Dooma"] = Cat("Dooma");
+			cache["Puma"] = Cat("Puma");
+			cache["Huma"] = Cat("Huma");
+
+			Cat* value = "Dog" in cache;
 			shouldEqual(value, null);
 		}),
 	);

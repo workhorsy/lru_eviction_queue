@@ -23,12 +23,12 @@ import std.stdio : stdout;
 auto cache = LRUEvictionQueue!(string, int)(3);
 
 // Fire this event when an item is evicted
-cache.on_evict_cb = delegate(string key, int value) {
+cache.on_evict_cb = delegate(string key, ref int value) {
 	stdout.writefln("Evicted item: %s", key);
 };
 
 // Fire this event when an item is updated
-cache.on_update_cb = delegate(string key, int value) {
+cache.on_update_cb = delegate(string key, ref int value) {
 	stdout.writefln("Updated item: %s", key);
 };
 
@@ -49,7 +49,7 @@ if ("ccc" in cache) {
 }
 
 // Prints all the items in the cache
-foreach (key, value ; cache) {
+foreach (key, ref value ; cache) {
 	stdout.writefln("%s : %s", key, value);
 }
 ----
@@ -244,7 +244,7 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	/++
 	Used to iterate over the queue.
 	+/
-	int opApply(scope int delegate(ref KEY key, VALUE value) dg) {
+	int opApply(scope int delegate(ref KEY key, ref VALUE value) dg) {
 		int result = 0;
 
 		foreach (key ; _expiration_list[]) {
@@ -260,7 +260,7 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		auto cache = LRUEvictionQueue!(string, int)(100);
 		cache["bbb"] = 5;
 		cache["zzz"] = 7;
-		foreach (key, value ; cache) {
+		foreach (key, ref value ; cache) {
 
 		}
 	}
@@ -341,12 +341,12 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	Params:
 	 on_evict_cb = The callback to fire.
 	+/
-	void delegate(KEY key, VALUE value) on_evict_cb;
+	void delegate(KEY key, ref VALUE value) on_evict_cb;
 
 	///
 	unittest {
 		auto cache = LRUEvictionQueue!(string, string)(2);
-		cache.on_evict_cb = delegate(string key, string value) {
+		cache.on_evict_cb = delegate(string key, ref string value) {
 
 		};
 
@@ -361,12 +361,12 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	Params:
 	 on_update_cb = The callback to fire.
 	+/
-	void delegate(KEY key, VALUE value) on_update_cb;
+	void delegate(KEY key, ref VALUE value) on_update_cb;
 
 	///
 	unittest {
 		auto cache = LRUEvictionQueue!(string, string)(100);
-		cache.on_update_cb = delegate(string key, string value) {
+		cache.on_update_cb = delegate(string key, ref string value) {
 
 		};
 
@@ -416,4 +416,3 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	SList!KEY _expiration_list;
 	VALUE[KEY] _cache;
 }
-
