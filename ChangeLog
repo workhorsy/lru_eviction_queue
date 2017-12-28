@@ -1,4 +1,4 @@
-* Release 1.7.0:
+12/27/2017 Release 1.7.0:
 	* Fixed Bug #6: Make events pass values by reference.
 
 09/13/2017 Release 1.6.0:

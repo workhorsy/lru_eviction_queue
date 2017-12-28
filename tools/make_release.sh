@@ -2,7 +2,7 @@
 # Stop and exit on error
 set -e
 
-VERSION="1.6.0"
+VERSION="1.7.0"
 
 cd ..
 sed 's/$VERSION/'$VERSION'/g' tools/README.template.md > README.md
