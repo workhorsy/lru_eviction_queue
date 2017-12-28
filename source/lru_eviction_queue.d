@@ -114,8 +114,7 @@ struct LRUEvictionQueue(KEY, VALUE) {
 			this.moveElementToFront(key);
 
 			if (on_update_cb) {
-				VALUE old_value = this._cache[key];
-				on_update_cb(key, old_value);
+				on_update_cb(key, this._cache[key]);
 			}
 
 			this._cache[key] = value;
