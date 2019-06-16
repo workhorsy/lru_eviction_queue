@@ -2,7 +2,7 @@
 	"name": "lru_eviction_queue",
 	"description": "A LRU Eviction Queue for the D programming language",
 	"authors": [
-		"Matthew Brennan Jones <matthew.brennan.jones@gmail.com>",
+		"Matthew Brennan Jones <matthew.brennan.jones@gmail.com>"
 	],
 	"homepage": "https://github.com/workhorsy/lru_eviction_queue",
 	"copyright": "Copyright (c) 2017 Matthew Brennan Jones",
@@ -16,7 +16,7 @@
 			"targetName": "lru_eviction_queue",
 			"targetType": "staticLibrary",
 			"dependencies": {
-			},
+			}
 		},
 		{
 			"name": "unittest",
@@ -24,8 +24,8 @@
 			"targetType": "executable",
 			"mainSourceFile": "test/main.d",
 			"dependencies": {
-				"bdd": "~>1.3.0",
-			},
-		},
-	],
+				"bdd": "~>1.3.0"
+			}
+		}
+	]
 }

@@ -2,5 +2,5 @@
 	"name": "example",
 	"targetType": "executable",
 	"sourceFiles": ["../source/lru_eviction_queue.d"],
-	"mainSourceFile": "example.d",
+	"mainSourceFile": "example.d"
 }
