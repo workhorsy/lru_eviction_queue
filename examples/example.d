@@ -9,7 +9,7 @@ int main() {
 	auto recipes = LRUEvictionQueue!(string, string)(6);
 
 	// Fire this event when an recipes is removed
-	recipes.on_evict_cb = delegate(key, value) {
+	recipes.on_evict_cb = delegate(key, ref value) {
 		stdout.writefln("Removed least used recipe to make room: %s\n", key);
 	};
 
