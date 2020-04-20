@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
+// Copyright (c) 2017-2020 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
 // Boost Software License - Version 1.0
 // A LRU Eviction Queue for the D programming language
 // https://github.com/workhorsy/lru_eviction_queue
