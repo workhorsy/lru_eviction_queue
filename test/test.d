@@ -1,8 +1,9 @@
 
 
-import BDD;
+
 
 unittest {
+	import BDD;
 	import lru_eviction_queue;
 
 	describe("LRUEvictionQueue",
@@ -202,8 +203,4 @@ unittest {
 			shouldEqual(value, null);
 		}),
 	);
-}
-
-int main() {
-	return BDD.printResults();
 }
