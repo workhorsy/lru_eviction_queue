@@ -23,14 +23,14 @@ import std.stdio : stdout;
 auto cache = LRUEvictionQueue!(string, int)(3);
 
 // Fire this event when an item is evicted
-cache.on_evict_cb = delegate(string key, ref int value) {
+cache.setOnEvictCb(delegate(string key, ref int value) {
 	stdout.writefln("Evicted item: %s", key);
-};
+});
 
 // Fire this event when an item is updated
-cache.on_update_cb = delegate(string key, ref int value) {
+cache.setOnUpdateCb(delegate(string key, ref int value) {
 	stdout.writefln("Updated item: %s", key);
-};
+});
 
 // Add
 cache["aaa"] = 65;
@@ -338,16 +338,18 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	The event to fire when an existing key is evicted
 
 	Params:
-	 on_evict_cb = The callback to fire.
+	 cb = The callback to fire.
 	+/
-	void delegate(KEY key, ref VALUE value) on_evict_cb;
+	void setOnEvictCb(void delegate(KEY key, ref VALUE value) cb) {
+		on_evict_cb = cb;
+	}
 
 	///
 	unittest {
 		auto cache = LRUEvictionQueue!(string, string)(2);
-		cache.on_evict_cb = delegate(string key, ref string value) {
+		cache.setOnEvictCb(delegate(string key, ref string value) {
 
-		};
+		});
 
 		cache["aaa"] = "Lisa";
 		cache["bbb"] = "Sally";
@@ -358,16 +360,18 @@ struct LRUEvictionQueue(KEY, VALUE) {
 	The event to fire when an existing key is updated
 
 	Params:
-	 on_update_cb = The callback to fire.
+	 cb = The callback to fire.
 	+/
-	void delegate(KEY key, ref VALUE value) on_update_cb;
+	void setOnUpdateCb(void delegate(KEY key, ref VALUE value) cb) {
+		on_update_cb = cb;
+	}
 
 	///
 	unittest {
 		auto cache = LRUEvictionQueue!(string, string)(100);
-		cache.on_update_cb = delegate(string key, ref string value) {
+		cache.setOnUpdateCb(delegate(string key, ref string value) {
 
-		};
+		});
 
 		cache["name"] = "Lisa";
 		cache["name"] = "Sally";
@@ -411,6 +415,8 @@ struct LRUEvictionQueue(KEY, VALUE) {
 		this._cache.remove(key);
 	}
 
+	void delegate(KEY key, ref VALUE value) on_evict_cb;
+	void delegate(KEY key, ref VALUE value) on_update_cb;
 	size_t _max_length;
 	SList!KEY _expiration_list;
 	VALUE[KEY] _cache;
