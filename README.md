@@ -3,7 +3,7 @@ A LRU Eviction Queue for the D programming language
 
 # Documentation
 
-[https://workhorsy.github.io/lru_eviction_queue/1.7.0/](https://workhorsy.github.io/lru_eviction_queue/1.7.0/)
+[https://workhorsy.github.io/lru_eviction_queue/2.0.0/](https://workhorsy.github.io/lru_eviction_queue/2.0.0/)
 
 # Generate documentation
 

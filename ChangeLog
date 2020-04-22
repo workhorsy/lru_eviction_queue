@@ -1,4 +1,4 @@
-* Release 2.0.0:
+04/21/2020 Release 2.0.0:
 	* Fixed Bug #7: Make tests run without main for changes in dmd 2.090
 
 12/27/2017 Release 1.7.0:
